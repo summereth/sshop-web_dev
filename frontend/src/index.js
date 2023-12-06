@@ -13,19 +13,19 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import HomeScreen from './screens/HomeScreen';
 
-// const router = createBrowserRouter(
-//   createRoutesFromElements(
-//     <Route path='/' element={<App />}>
-//       {/* Add index={true} to avoid showing multiple screens */}
-//       <Route index={true} path='/' element={<HomeScreen />} />
-//     </Route>
-//   )
-// )
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path='/' element={<App />}>
+      {/* Add index={true} to avoid showing multiple screens */}
+      <Route index={true} path='/' element={<HomeScreen />} />
+    </Route>
+  )
+)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router}/>
   </React.StrictMode>
 );
 
