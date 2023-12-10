@@ -16,7 +16,7 @@ const HomeScreen = () => {
     };
 
     fetchProducts();
-  }, []);
+  });
 
   return (
     <>

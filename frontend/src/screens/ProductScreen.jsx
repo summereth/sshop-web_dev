@@ -18,7 +18,7 @@ const ProductScreen = () => {
             setProduct(data)
         }
         fetchProduct()
-    },[productId]);
+    }); // we can also put [productId] as dependency. but it only changes when url changes
 
     return (
         <>
