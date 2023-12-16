@@ -1,4 +1,5 @@
-export const BASE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3001" : "";
+// export const BASE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3001" : "";
+export const BASE_URL = ""; // we are using proxy in dev env
 export const PRODUCTS_URL = "/api/products";
 export const USERS_URL = "/api/users";
 export const ORDERS_URL = "/api/orders";
