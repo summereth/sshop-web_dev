@@ -1,7 +1,7 @@
 const notFound = (req, res, next) => {
     const error = new Error(`Not Found - ${req.originalUrl}`);
     res.status(404);
-    // call next middleware
+    // call next middleware (errorHandler)
     next(error);
 };
 
@@ -18,6 +18,7 @@ const errorHandler = (err, req, res, next) => {
     // reorganize res.statusCode and json body
     res.status(statusCode).json({
         message,
+        // avoid disclosure of sensitive information about the server during production stage
         stack: process.env.NODE_ENV === 'production' ? '🥞' : err.stack,
     });
 };

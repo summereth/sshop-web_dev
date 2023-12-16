@@ -16,7 +16,10 @@ app.get('/', (req, res) => {
 
 app.use('/api/products', productRoutes);
 
+// route not founded
 app.use(notFound);
+
+// middleware of errorHandler(err, req, res, next)
 app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
