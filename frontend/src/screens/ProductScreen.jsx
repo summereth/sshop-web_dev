@@ -24,7 +24,7 @@ const ProductScreen = () => {
 
     const addToCartHandler = () => {
         dispatch(addToCart({...product, qty})); // pass object of product (add qty) as payload to action addToCart
-        navigate("/cart");
+        // navigate("/cart");
     };
 
     return (

@@ -1,12 +1,10 @@
 // we don't need to use createApi, which requires endpoint to deal with asynchronous requests
 import { createSlice } from "@reduxjs/toolkit";
+import { updateCart } from "../utils/cartUtils.js";
 
 const initialState = localStorage.getItem("cart") 
     ? JSON.parse(localStorage.getItem("cart")) 
     : {cartItems: []};
-
-// A helper function to round up numbers with 2 decimal places
-const addDecimals = (num) => (Math.round(num * 100) / 100).toFixed(2);
 
 const cartSlice = createSlice({
     name: "cart",
@@ -18,33 +16,39 @@ const cartSlice = createSlice({
             const existItem = state.cartItems.find((x) => x._id === item._id);
 
             if (existItem) {
-                state.cartItems = state.cartItems.map((x) => x._id === existItem._id ? item : x);
+                // replace existing time with the item (object) passed as action payload
+                // , which has an updated item.qty attribute
+                // state.cartItems = state.cartItems.map((x) => x._id === existItem._id ? item : x);
+
+                // instead of replacement, we just update the quantity
+                // so that users can keep adding x qty
+                existItem.qty += item.qty;
             } else {
                 // we can't do state.cartItems.push()
                 // because state is immutable. we can only make a copy of it
                 state.cartItems = [...state.cartItems, item];
             }
 
-            // Calculate items price
-            state.itemsPrice = addDecimals(state.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0));
+            updateCart(state);
+        },
 
-            // Calculate shipping price (If itemsPrice is over $60 then free, else $10)
-            state.shippingPrice = addDecimals(state.itemsPrice >= 60 ? 0 : 10);
+        updateQty: (state, action) => {
+            const item = action.payload;
 
-            // Calculate tax price (15% tax)
-            state.taxPrice = addDecimals(Number(0.15 * state.itemsPrice));
+            const existItem = state.cartItems.find((x) => x._id === item._id);
 
-            // Calculate total price
-            state.totalPrice = addDecimals(
-                Number(state.itemsPrice) +
-                Number(state.shippingPrice) +
-                Number(state.taxPrice)
-            );
+            if (existItem) {
+                // replace existing time with the item (object) passed as action payload
+                // , which has an updated item.qty attribute
+                state.cartItems = state.cartItems.map((x) => x._id === existItem._id ? item : x);
+            } else {
+                throw Error("Update quantity failed: Item not found");
+            }
 
-            localStorage.setItem("cart", JSON.stringify(state));
+            updateCart(state);
         },
     },
 });
 
-export const { addToCart } = cartSlice.actions;
+export const { addToCart, updateQty } = cartSlice.actions;
 export default cartSlice;
