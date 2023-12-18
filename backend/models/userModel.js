@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -22,6 +23,11 @@ const userSchema = new mongoose.Schema({
 }, {
     timestamps: true,
 });
+
+// Must use function keyword here. => causes error
+userSchema.methods.matchPassword = function (enteredPwd) {
+    return bcrypt.compareSync(enteredPwd, this.password);
+};
 
 const User = mongoose.model("User", userSchema);
 
