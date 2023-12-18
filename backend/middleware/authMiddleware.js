@@ -2,7 +2,7 @@ import User from "../models/userModel.js";
 import asyncHandler from "./asyncHandler.js";
 import jwt from "jsonwebtoken";
 
-// Protect routes
+// Protect routes. Check if there's a JWT, if yes, auth the user by populate req.user
 const protect = asyncHandler( async (req, res, next) => {
     
     const token = req.cookies.jwt;
