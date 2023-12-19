@@ -6,7 +6,7 @@ export const updateCart = (state) => {
     state.itemsPrice = addDecimals(state.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0));
 
     // Calculate shipping price (If itemsPrice is over $60 then free, else $10)
-    state.shippingPrice = addDecimals(state.itemsPrice >= 60 ? 0 : 10);
+    state.shippingPrice = addDecimals(state.cartItems.length === 0 || state.itemsPrice >= 60 ? 0 : 10);
 
     // Calculate tax price (15% tax)
     state.taxPrice = addDecimals(Number(0.15 * state.itemsPrice));

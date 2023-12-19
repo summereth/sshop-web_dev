@@ -1,3 +1,6 @@
+// Handle FE localStorage/state
+// usersApiSlice.js is responsible to call BE Api
+
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -14,8 +17,12 @@ const authSlice = createSlice({
             state.userInfo = action.payload;
             localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
         },
+        logout: (state, action) => {
+            state.userInfo = null;
+            localStorage.removeItem("userInfo");
+        }
     },
 });
 
-export const { setCredentials } = authSlice.actions;
+export const { setCredentials, logout } = authSlice.actions;
 export default authSlice;
