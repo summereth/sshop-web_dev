@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { Row, Col, Card, ItemGroup, Image, Form, Button, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Row, Col, Card, Image, Form, Button, ListGroup } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa6";
 import { updateQty, removeFromCart } from "../slices/cartSlice.js";
 import Message from "../components/Message.jsx";

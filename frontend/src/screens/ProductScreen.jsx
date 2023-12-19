@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useGetProductDetailQuery } from '../slices/productApiSlice.js';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -13,7 +13,7 @@ import Message from '../components/Message.jsx';
 const ProductScreen = () => {
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     // qty to add into the cart
     const [qty, setQty] = useState(1);
