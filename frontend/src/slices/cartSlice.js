@@ -54,6 +54,7 @@ const cartSlice = createSlice({
             updateCart(state);
         },
 
+        // Should be called when the user logout
         clearCart: (state, action) => {
             // Somehow the following codes can't update localStorage
             // state = {
@@ -65,6 +66,13 @@ const cartSlice = createSlice({
             state.cartItems = [];
             state.shippingAddress = {};
             state.paymentMethod = "";
+            updateCart(state);
+        },
+
+        // Should be called when the user place an order
+        clearCartItems: (state, action) => {
+            state.cartItems = [];
+            
             updateCart(state);
         },
 
@@ -80,5 +88,5 @@ const cartSlice = createSlice({
     },
 });
 
-export const { addToCart, updateQty, removeFromCart, clearCart, addShippingAddress, savePaymentMethod } = cartSlice.actions;
+export const { addToCart, updateQty, removeFromCart, clearCart, addShippingAddress, savePaymentMethod, clearCartItems } = cartSlice.actions;
 export default cartSlice;
