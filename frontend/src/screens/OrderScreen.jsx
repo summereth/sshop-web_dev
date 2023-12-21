@@ -1,10 +1,11 @@
 import { Link, useParams } from 'react-router-dom';
-import { usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { useGetOrderDetailQuery } from '../slices/ordersApiSlice';
 import { usePayOrderMutation, useGetPayPalClientIdQuery } from '../slices/ordersApiSlice';
 import { useEffect } from 'react';
 import React from 'react'
-import { Row, Col, Card, Image, ListGroup } from 'react-bootstrap';
+import { Row, Col, Card, Image, ListGroup, Button } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 
@@ -42,6 +43,41 @@ const OrderScreen = () => {
         }
     }, [loadingPayPal, errorPayPal, paypal, order, paypalDispatch]);
 
+    const onApproveTest = async () => {
+        await payOrder({orderId, details: {payer: {}}});
+        refetch();
+        toast.success("Payment completed!");
+    };
+
+    const createPaymentOrder = (data, actions) => {
+        return actions.order
+        .create({
+            purchase_units: [
+                {
+                    amount: {
+                        value: order.totalPrice,
+                    },
+                },
+            ],
+        })
+        .then((orderId) => (orderId));
+    };
+
+    const onApprove = (data, actions) => {
+        return actions.order.capture().then(async function(details) {
+            try {
+                await payOrder({orderId, details});
+                refetch();
+                toast.success("Payment completed!");
+            } catch (error) {
+                toast.error(error.data?.message || error.message);
+            }
+        });
+    };
+
+    const onError = (err) => {
+        toast.error(err.data?.message || err.message);
+    };
     
   return isLoading ? (<Loader />) 
   : error ? (<Message variant="danger">{error.data?.message || error.error}</Message>) 
@@ -127,6 +163,27 @@ const OrderScreen = () => {
                         </Row>
                     </ListGroup.Item>
                     {/* PAY ORDER PLACEHOLDER */}
+                    { !order.isPaid && (
+                        <ListGroup.Item>
+                            {loadingPay && (<Loader />)}
+
+                            {isPending ? (<Loader />) : (
+                                <div>
+                                    {/* <Button onClick={onApproveTest} style={{marginBottom: "10px"}}>
+                                        Test Pay Order
+                                    </Button> */}
+                                    <div>
+                                        <PayPalButtons
+                                            createOrder={createPaymentOrder}
+                                            onApprove={onApprove}
+                                            onError={onError}
+                                            style={{layout: "horizontal"}}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </ListGroup.Item>
+                    )}
                     {/* MARK AS DELIVERED PLACEHOLDER */}
                 </ListGroup>
             </Card>

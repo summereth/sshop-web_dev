@@ -38,7 +38,7 @@ const PlaceOrderScreen = () => {
 
     const placeOrderHandler = async() => {
         if (cartItems.length === 0) {
-            toast("Your cart is empty!");
+            toast.error("Your cart is empty!");
             return;
         }
 
