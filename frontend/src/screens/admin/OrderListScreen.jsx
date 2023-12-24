@@ -1,17 +1,28 @@
-import { useGetOrdersQuery } from '../../slices/ordersApiSlice'
+import { useGetOrdersQuery } from '../../slices/ordersApiSlice';
+import { useDeliverOrderMutation } from '../../slices/ordersApiSlice';
 import { Table, Button } from 'react-bootstrap';
 import { FaTimes } from 'react-icons/fa';
 import React from 'react'
 import Loader from '../../components/Loader';
 import Message from '../../components/Message';
+import { toast } from 'react-toastify';
 import { LinkContainer } from 'react-router-bootstrap';
 
 const OrderListScreen = () => {
 
-    const { data: orders, isLoading, error } = useGetOrdersQuery();
+    const { data: orders, refetch, isLoading, error } = useGetOrdersQuery();
     // console.log(orders);
+    const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
 
-    const updateDeliveredHandler = () => {};
+    const updateDeliveredHandler = async (orderId) => {
+        try {
+            await deliverOrder(orderId);
+            refetch();
+            toast.success("Update delivered!");
+        } catch (error) {
+            toast.error(error.data?.message || error.error);
+        }
+    };
 
   return (
     <>
@@ -38,12 +49,17 @@ const OrderListScreen = () => {
                             <td>{order.createdAt.substring(0, 19)}</td>
                             <td>{order.user && order.user.email}</td>
                             <td>{order.totalPrice}</td>
-                            <td>{order.isPaid ? (order.paidAt) : (<FaTimes style={{color: "red"}}/>)}</td>
-                            <td>{order.isDelivered ? (order.deliveredAt) : (
-                                <Button className='btn-sm' variant='light' onClick={updateDeliveredHandler}>
-                                    Delivered
-                                </Button>
-                            )}</td>
+                            <td>{order.isPaid ? (order.paidAt.substring(0, 19)) : (<FaTimes style={{color: "red"}}/>)}</td>
+                            <td>
+                                {order.isDelivered ? (order.deliveredAt.substring(0, 19)) 
+                                : !order.isPaid ? <FaTimes style={{color: "red"}}/> 
+                                : loadingDeliver ? <Loader />
+                                : (
+                                    <Button className='btn-sm' variant='light' onClick={(e) => updateDeliveredHandler(order._id)}>
+                                        Deliver
+                                    </Button>
+                                )}
+                            </td>
                             <td>
                                 <LinkContainer to={`/order/${order._id}`}>
                                     <Button className='btn-sm' variant='light'>Detail</Button>
