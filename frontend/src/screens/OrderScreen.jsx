@@ -84,7 +84,7 @@ const OrderScreen = () => {
   : (
   <>
     <h1>{order.isDeliverd ? "Order Delivered" : order.isPaid ? "Order Paid" : "Order Confirmed"}</h1>
-    <p>Ordered on {order.createdAt} | OrderID: {order._id}</p>
+    <p>Ordered on {order.createdAt.substring(0, 10)} | OrderID: {order._id}</p>
 
     <Row>
         <Col md={8}>
