@@ -54,11 +54,11 @@ const getMyOrders = asyncHandler(async (req, res) => {
 const getOrderById = asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id).populate("user", "name email");
 
-    // ToDo: verify auth user is the one who placed the order
+    // ToDo: verify auth user is the one who placed the order or admin user
 
-    if (order && req.user._id.equals(order.user._id)) {
+    if (order && (req.user._id.equals(order.user._id) || req.user.isAdmin)) {
         res.status(200).json(order);
-    } else if (!req.user._id.equals(order.user._id)) {
+    } else if (order) {
         res.status(400);
         throw new Error("You have no access to this order");
     } else {
@@ -103,7 +103,8 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @route   GET /api/orders
 // @access  private/Admin
 const getOrders = asyncHandler(async (req, res) => {
-    res.send("get all orders");
+    const orders = await Order.find({}).populate("user", "id name email");
+    res.status(200).json(orders);
 });
 
 
