@@ -2,7 +2,7 @@ import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js"
 
 // @desc    Fetch all products
-// @route   /api/products
+// @route   GET /api/products
 // @access  public
 const getProducts = asyncHandler(async (req, res) => {
     const products = await Product.find({});
@@ -11,7 +11,7 @@ const getProducts = asyncHandler(async (req, res) => {
 
 
 // @desc    Fetch a product by Id
-// @route   /api/products/:id
+// @route   GET /api/products/:id
 // @access  public
 const getProductById = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
@@ -23,6 +23,26 @@ const getProductById = asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error("Resource Not Found");
     }
-})
+});
 
-export { getProducts, getProductById };
+// @desc    Create a sample product
+// @route   POST /api/products
+// @access  public
+const createProduct = asyncHandler(async (req, res) => {
+    const product = new Product({
+        user: req.user._id,
+        name: "Sample product",
+        image: "/images/sample.jpg",
+        description: "Sample description",
+        brand: "Sample",
+        category: "Sample",
+        price: 0,
+        countInStock: 0,
+    });
+
+    const createdProduct = await product.save();
+
+    res.status(201).json(createdProduct);
+});
+
+export { getProducts, getProductById, createProduct };
