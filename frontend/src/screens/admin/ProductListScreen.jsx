@@ -1,6 +1,7 @@
 import { Row, Col, Table, Button } from 'react-bootstrap';
 import { useGetProductsQuery } from '../../slices/productApiSlice';
 import { useCreateProductMutation } from '../../slices/productApiSlice';
+import { useDeleteProductMutation } from '../../slices/productApiSlice';
 import React from 'react';
 import { FaEdit } from 'react-icons/fa';
 import Loader from '../../components/Loader';
@@ -13,8 +14,17 @@ const ProductListScreen = () => {
 
     const { data: products, refetch, isLoading, error } = useGetProductsQuery();
     const [ createProduct, {isLoading: loadingCreateProduct }] = useCreateProductMutation();
+    const [ deleteProduct, { isLoading: loadingDelete }] = useDeleteProductMutation();
 
-    const deleteProductHandler = () => {};
+    const deleteProductHandler = async (productId) => {
+        try {
+            await deleteProduct(productId);
+            refetch();
+            toast.success("Product deleted!");
+        } catch (error) {
+            toast.error(error.data?.message || error.error );
+        }
+    };
 
     const createProductHandler = async () => {
         try {
@@ -65,7 +75,10 @@ const ProductListScreen = () => {
                             <LinkContainer to={`/admin/product/${product._id}/edit`}>
                                 <Button type='button' className='btn-sm mx-2' variant='light'><FaEdit /></Button>
                             </LinkContainer>
-                            <Button className='btn-sm' variant='danger' onClick={deleteProductHandler}><FaTrash style={{color: "white"}}/></Button>
+                            { loadingDelete ? <Loader /> : (
+                                <Button className='btn-sm' variant='danger' onClick={(e) => deleteProductHandler(product._id)}><FaTrash style={{color: "white"}}/></Button>
+                            )}
+                            
                         </td>
                     </tr>
                 ))}
