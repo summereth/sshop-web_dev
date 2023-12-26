@@ -51,11 +51,12 @@ const createProduct = asyncHandler(async (req, res) => {
 const updateProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
 
-    const { name, description, brand, category, price, countInStock } = req.body;
+    const { name, description, image, brand, category, price, countInStock } = req.body;
 
     if (product) {
         product.name = name;
         product.description = description;
+        product.image = image;
         product.brand = brand;
         product.category = category;
         product.price = price;

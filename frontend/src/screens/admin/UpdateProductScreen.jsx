@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUpdateProductMutation } from '../../slices/productApiSlice';
+import { useUploadProductImageMutation } from '../../slices/productApiSlice';
 import { useGetProductDetailQuery } from '../../slices/productApiSlice';
 import { Link } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
@@ -17,6 +18,7 @@ const UpdateProductScreen = () => {
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    const [image, setImage] = useState("");
     const [brand, setBrand] = useState("");
     const [category, setCategory] = useState("");
     const [price, setPrice] = useState(0);
@@ -26,6 +28,7 @@ const UpdateProductScreen = () => {
         if (product) {
             setName(product.name);
             setDescription(product.description);
+            setImage(product.image);
             setBrand(product.brand);
             setCategory(product.category);
             setPrice(product.price);
@@ -34,6 +37,7 @@ const UpdateProductScreen = () => {
     }, [product, setName, setDescription, setBrand, setCategory, setPrice, setCountInStock]);
 
     const [updateProduct, {isLoading: loadingUpdate}] = useUpdateProductMutation();
+    const [uploadImage, { isLoading: loadingUpload }] = useUploadProductImageMutation();
 
     const navigate = useNavigate();
 
@@ -41,13 +45,28 @@ const UpdateProductScreen = () => {
         e.preventDefault();
         try {
             // NOTE: here we need to unwrap the Promise to catch any rejection in our catch block
-            await updateProduct({ _id: productId, name, description, brand, category, price, countInStock }).unwrap();
+            console.log(image);
+            await updateProduct({ _id: productId, name, image, description, brand, category, price, countInStock }).unwrap();
             refetch();
             toast.success("Product updated!");
         } catch (error) {
             toast.error(error.data?.message || error.error);
         }
         navigate('/admin/productlist');
+    };
+
+    // only update component state of image. product.image won't be updated unless users submit
+    const uploadFileHandler = async (e) => {
+        const formData = new FormData();
+        formData.append("image", e.target.files[0]);
+
+        try {
+            const res = await uploadImage(formData).unwrap();
+            toast.success(res.message);
+            setImage(res.image);
+        } catch (error) {
+            toast.error(error.data?.message || error.error);
+        }
     };
 
   return (
@@ -79,6 +98,24 @@ const UpdateProductScreen = () => {
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
+                    </Form.Group>
+
+                    <Form.Group controlId='image' className='my-2'>
+                        <Form.Label>Image</Form.Label>
+                        <Form.Control 
+                            type='text'
+                            placeholder='Enter image url'
+                            value={image}
+                            onChange={(e) => setImage(e.target.value)}
+                        />
+                        { loadingUpload ? <Loader /> : (
+                            <Form.Control
+                                type='file'
+                                label='Choose a file'
+                                onChange={uploadFileHandler}
+                            />
+                        )}
+                        
                     </Form.Group>
 
                     <Form.Group controlId='brand' className='my-2'>
