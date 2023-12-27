@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import { logout } from "../slices/authSlice";
 import { clearCart } from '../slices/cartSlice';
+import SearchBox from './SearchBox';
 import logo from '../assets/logo.png';
 
 const Header = () => {
@@ -43,6 +44,7 @@ const Header = () => {
                     <Navbar.Collapse id='basic-navbar-nav'>
                         {/* align to the right */}
                         <Nav className='ms-auto'>
+                            <SearchBox />
                             <LinkContainer to='/cart'>
                                 <Nav.Link><FaCartShopping /> 
                                     Cart

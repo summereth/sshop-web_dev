@@ -2,8 +2,9 @@ import React from 'react';
 import {Row, Col} from 'react-bootstrap';
 import Product from '../components/Product';
 import { useGetProductsQuery } from '../slices/productApiSlice.js';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Paginate from '../components/Paginate.jsx';
+import CategoryFilter from '../components/CategoryFilter.jsx';
 import Loader from '../components/Loader.jsx';
 import Message from '../components/Message.jsx';
 
@@ -15,6 +16,11 @@ const HomeScreen = () => {
 
   return (
     <>
+      {keyword && (
+        <Link className='btn btn-light my-3' to='/'>
+          Go Back
+        </Link>
+      )}
       {isLoading ? (
         <Loader />
       ) : error ? (
@@ -22,6 +28,7 @@ const HomeScreen = () => {
       ) : (
       <>
         <h1>Latest Product</h1>
+        <CategoryFilter />
         <Row>
             {data.products.map((product) => (
                 // 1 col on small screen, 2 on medium, 3 on large, 4 on xlarge
