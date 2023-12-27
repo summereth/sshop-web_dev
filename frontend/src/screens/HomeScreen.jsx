@@ -8,10 +8,10 @@ import Loader from '../components/Loader.jsx';
 import Message from '../components/Message.jsx';
 
 const HomeScreen = () => {
-  const { pageNumber } = useParams();
+  const { pageNumber, keyword } = useParams();
   const pageSize = 4;
 
-  const { data, isLoading, error } = useGetProductsQuery({ pageNumber, pageSize });
+  const { data, isLoading, error } = useGetProductsQuery({ pageNumber, pageSize, keyword });
 
   return (
     <>
@@ -30,7 +30,7 @@ const HomeScreen = () => {
                 </Col>
             ))}
         </Row>
-        <Paginate page={data.page} pages={data.pages}/>
+        <Paginate page={data.page} pages={data.pages} keyword={keyword}/>
       </>)}
     </>
   )
