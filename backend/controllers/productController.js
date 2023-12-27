@@ -88,4 +88,47 @@ const deleteProduct = asyncHandler(async (req, res) => {
     }
 });
 
-export { getProducts, getProductById, createProduct, updateProduct, deleteProduct };
+// @desc    Create a product review
+// @route   POST /api/products/:id/reviews
+// @access  private
+const createProductReview = asyncHandler(async (req, res) => {
+
+    const { rating, comment } = req.body;
+
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+        const alreadyReviewed = product.reviews.find( // Arrays find() function. Not Mongoose function
+            (review) => review.user.toString() === req.user._id.toString()
+        );
+
+        if (alreadyReviewed) {
+            res.status(400);
+            throw new Error("The user already reviewed this product");
+        } else {
+            product.reviews.push({
+                user: req.user._id,
+                name: req.user.name,
+                rating,
+                comment,
+            });
+
+            product.numReviews = product.reviews.length;
+
+            product.rating = product.reviews.reduce((a, review) => a + review.rating, 0) / product.numReviews;
+
+            await product.save();
+
+            res.status(201).json({
+                message: "Review added",
+                ...product,
+            });
+
+        }
+    } else {
+        res.status(404);
+        throw new Error("Resource Not Found");
+    }
+});
+
+export { getProducts, getProductById, createProduct, updateProduct, deleteProduct, createProductReview };
