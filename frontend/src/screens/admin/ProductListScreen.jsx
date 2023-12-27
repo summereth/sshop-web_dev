@@ -9,10 +9,16 @@ import Message from '../../components/Message';
 import { toast } from 'react-toastify';
 import { LinkContainer } from 'react-router-bootstrap';
 import { FaTrash } from 'react-icons/fa6';
+import { useParams } from 'react-router-dom';
+import Paginate from '../../components/Paginate';
 
 const ProductListScreen = () => {
 
-    const { data: products, refetch, isLoading, error } = useGetProductsQuery();
+    const { pageNumber } = useParams();
+    const pageSize = 10;
+
+    const { data, refetch, isLoading, error } = useGetProductsQuery({ pageNumber, pageSize });
+    console.log(data);
     const [ createProduct, {isLoading: loadingCreateProduct }] = useCreateProductMutation();
     const [ deleteProduct, { isLoading: loadingDelete }] = useDeleteProductMutation();
 
@@ -55,6 +61,7 @@ const ProductListScreen = () => {
     { isLoading ? <Loader />
     : error ? <Message variant="danger">error.data?.message || error.error</Message> 
     : (
+        <>
         <Table hover striped responsive>
             <thead>
                 <tr>
@@ -67,7 +74,7 @@ const ProductListScreen = () => {
                 </tr>
             </thead>
             <tbody>
-                {products.map((product) => (
+                {data.products.map((product) => (
                     <tr key={product._id}>
                         <td>{product._id}</td>
                         <td>{product.name}</td>
@@ -87,6 +94,9 @@ const ProductListScreen = () => {
                 ))}
             </tbody>
         </Table>
+        {/* paginate should be inside of <>, so that we can check if getProducts finishes loading */}
+        <Paginate page={data.page} pages={data.pages} isAdmin={true}/>
+        </>
     )}
     </>
   )
