@@ -1,24 +1,25 @@
-import { Form, Button } from 'react-bootstrap';
-import { useState } from 'react';
+import { Form } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import React from 'react'
 
 const CategoryFilter = () => {
+    // This doesn't work. When refresh the page, "" will be automatically selected
     const { category: urlCategory } = useParams;
+
     const [category, setCategory] = useState(urlCategory | "");
     const navigate = useNavigate();
 
-    const submitHandler = (e) => {
-        e.preventDefault();
+    useEffect(() => {
         if (category) {
             navigate(`/category/${category}`);
         } else {
             navigate("/");
         }
-    };
+    }, [category, navigate]);
 
   return (
-    <Form onSubmit={submitHandler} className='d-flex'>
+    <Form className='d-flex'>
         <Form.Control
             as="select"
             value={category}
@@ -30,7 +31,6 @@ const CategoryFilter = () => {
             <option value="Beauty">Beauty</option>
             <option value="Book">Book</option>
         </Form.Control>
-        <Button type="submit" variant='outline' className='mx-2 p-2'>Filter</Button>
     </Form>
   )
 }
