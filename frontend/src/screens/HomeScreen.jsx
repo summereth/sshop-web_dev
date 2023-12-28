@@ -6,6 +6,7 @@ import { useParams, Link } from 'react-router-dom';
 import Paginate from '../components/Paginate.jsx';
 import CategoryFilter from '../components/CategoryFilter.jsx';
 import ProductCarousel from '../components/ProductCarousel.jsx';
+import Meta from '../components/Meta.jsx';
 import Loader from '../components/Loader.jsx';
 import Message from '../components/Message.jsx';
 
@@ -17,6 +18,7 @@ const HomeScreen = () => {
 
   return (
     <>
+      <Meta />
       {!keyword ? <ProductCarousel /> : (
         <Link className='btn btn-light my-3' to='/'>
           Go Back

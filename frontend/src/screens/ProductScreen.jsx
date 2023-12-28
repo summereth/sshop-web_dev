@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { Form, Row, Col, Image, Card, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
 import { addToCart } from '../slices/cartSlice.js';
 import { toast } from "react-toastify";
+import Meta from "../components/Meta.jsx";
 import Rating from '../components/Rating';
 import Loader from '../components/Loader.jsx';
 import Message from '../components/Message.jsx';
@@ -66,6 +67,7 @@ const ProductScreen = () => {
                 <Message variant="danger">{error?.data?.message || error.error}</Message>
             ) : (
             <>
+                <Meta title={product.name}></Meta>
                 <Row>
                     <Col md={5}>
                         {/* fluid makes image flexible */}
