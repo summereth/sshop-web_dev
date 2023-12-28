@@ -5,6 +5,7 @@ import { useGetProductsQuery } from '../slices/productApiSlice.js';
 import { useParams, Link } from 'react-router-dom';
 import Paginate from '../components/Paginate.jsx';
 import CategoryFilter from '../components/CategoryFilter.jsx';
+import ProductCarousel from '../components/ProductCarousel.jsx';
 import Loader from '../components/Loader.jsx';
 import Message from '../components/Message.jsx';
 
@@ -16,11 +17,12 @@ const HomeScreen = () => {
 
   return (
     <>
-      {keyword && (
+      {!keyword ? <ProductCarousel /> : (
         <Link className='btn btn-light my-3' to='/'>
           Go Back
         </Link>
       )}
+      
       {isLoading ? (
         <Loader />
       ) : error ? (
