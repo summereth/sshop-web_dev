@@ -8,7 +8,7 @@ import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
-import { notFound, errorHandler } from './middleware/errorMiddleware.js'
+import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 const port = process.env.PORT || 5000;
 
 connectDB();
@@ -22,10 +22,6 @@ app.use(express.urlencoded({extended: true}));
 // Cookie parser middleware (allow us to use req.cookies, req.cookies.name)
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
-    res.send("API is running...");
-});
-
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
@@ -36,6 +32,21 @@ app.get('/api/config/paypal', (req, res) => res.send({clientId: process.env.PAYP
 // Make uploads/ folder static
 const __dirname = path.resolve(); // set __dirname to current directory
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
+if (process.env.NODE_ENV === "production") {
+    // /frontend/build will be created when we run npm build
+    // Make the folder static
+    app.use(express.static(path.join(__dirname, "/frontend/build")));
+
+    // any route that is not an api will be directed to index.html
+    app.get("*", (req, res) => {
+        res.sendFile(__dirname, "frontend", "build", "index.html");
+    });
+} else {
+    app.get('/', (req, res) => {
+        res.send("API is running...");
+    });
+}
 
 // route not founded
 app.use(notFound);
