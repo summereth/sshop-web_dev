@@ -11,9 +11,11 @@ import Loader from '../components/Loader.jsx';
 import Message from '../components/Message.jsx';
 
 const HomeScreen = () => {
-  const { pageNumber, keyword, category } = useParams();
+  const { pageNumber, keyword, category: urlCategory } = useParams();
   const pageSize = 4;
 
+  const category = urlCategory === "All" ? "" : urlCategory;
+  
   const { data, isLoading, error } = useGetProductsQuery({ pageNumber, pageSize, keyword, category });
 
   return (

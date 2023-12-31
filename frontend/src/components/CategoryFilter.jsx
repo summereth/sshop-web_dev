@@ -13,8 +13,6 @@ const CategoryFilter = () => {
     useEffect(() => {
         if (category) {
             navigate(`/category/${category}`);
-        } else {
-            navigate("/");
         }
     }, [category, navigate]);
 
@@ -25,7 +23,7 @@ const CategoryFilter = () => {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
         >
-            <option value="">All Category</option>
+            <option value="All">All Category</option>
             <option value="Electronics">Electronics</option>
             <option value="Grocery">Grocery</option>
             <option value="Beauty">Beauty</option>
